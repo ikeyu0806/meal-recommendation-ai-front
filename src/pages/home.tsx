@@ -1,14 +1,42 @@
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { Label, Textarea, Button } from 'flowbite-react'
+import axios from 'axios'
 
 export default function Home() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
+  const [typingIndex, setTypingIndex] = useState(0)
+  const [fullAnswer, setFullAnswer] = useState('')
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('質問:', question)
+    axios
+    .post('http://localhost:4111/api/agents/recipeAgent/generate', {
+      messages: [question]
+    })
+    .then(response => {
+      console.log('回答:', response.data)
+      const text = response.data.text
+      setAnswer('')
+      setFullAnswer(text)
+      setTypingIndex(0)
+    })
+    .catch(error => {
+      console.error('エラー:', error)
+    })
   }
+
+  useEffect(() => {
+    if (typingIndex < fullAnswer.length) {
+      const timeout = setTimeout(() => {
+        setAnswer(prev => prev + fullAnswer.charAt(typingIndex))
+        setTypingIndex(prev => prev + 1)
+      }, 30) // 文字ごとの間隔（ミリ秒）
+
+      return () => clearTimeout(timeout)
+    }
+  }, [typingIndex, fullAnswer])
 
   return (
     <>

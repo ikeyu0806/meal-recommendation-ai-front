@@ -11,7 +11,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Navbar fluid rounded>
         <NavbarCollapse>
           <NavbarLink href='/'>Home</NavbarLink>
-          <NavbarLink href='/faq'>Faq</NavbarLink>
         </NavbarCollapse>
       </Navbar>
 
